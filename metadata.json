@@ -1,0 +1,6 @@
+{
+  "name": "مملكة تاليا لليونيكورن",
+  "description": "لعبة مغامرات اليونيكورن السحرية لـ تاليا عمر عبر ثلاث عوالم ومهام تفاعلية",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
