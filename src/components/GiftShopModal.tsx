@@ -8,7 +8,7 @@ import {
   SavedProgress,
 } from '../game/types';
 import { PowerUpgradesPanel } from './PowerUpgradesPanel';
-import { UnicornPreviewCanvas } from './UnicornPreviewCanvas';
+import { PowerBurstTrigger, UnicornPreviewCanvas } from './UnicornPreviewCanvas';
 
 interface GiftShopModalProps {
   progress: SavedProgress;
@@ -26,9 +26,19 @@ export function GiftShopModal({
   onUpgradePower,
 }: GiftShopModalProps) {
   const [activeTab, setActiveTab] = useState<GiftShopTab>('accessories');
+  const [powerBurst, setPowerBurst] = useState<PowerBurstTrigger | null>(null);
   const equippedAccessory = progress.equipped.accessoryId || 'none';
   const currentAccessoryObj =
     GIFT_ACCESSORIES.find((a) => a.id === equippedAccessory) || GIFT_ACCESSORIES[0];
+
+  const handleUpgradeAndBurst = (id: PowerUpgradeId) => {
+    onUpgradePower(id);
+    setPowerBurst({
+      id,
+      level: Math.min(5, (progress.powerUpgrades[id] || 1) + 1),
+      nonce: Date.now(),
+    });
+  };
 
   const earnedCount = progress.earnedMedals.length;
 
@@ -67,7 +77,12 @@ export function GiftShopModal({
           {/* Left Showcase */}
           <div className="flex flex-col items-center justify-between rounded-2xl border border-[#F5E1EC] bg-gradient-to-b from-[#FFF5F9] to-[#FFFDF9] p-5 text-center">
             <div className="flex flex-col items-center">
-              <UnicornPreviewCanvas customization={progress.equipped} size={175} />
+              <UnicornPreviewCanvas
+                customization={progress.equipped}
+                powerUpgrades={progress.powerUpgrades}
+                powerBurst={powerBurst}
+                size={175}
+              />
               <p className="mt-2 font-display text-lg font-bold text-[#3D1D42]">
                 إطلالة {progress.playerName}
               </p>
@@ -203,7 +218,7 @@ export function GiftShopModal({
               <PowerUpgradesPanel
                 bankStars={progress.bankStars}
                 powerUpgrades={progress.powerUpgrades}
-                onUpgradePower={onUpgradePower}
+                onUpgradePower={handleUpgradeAndBurst}
               />
             ) : (
               <section className="flex flex-col gap-3">

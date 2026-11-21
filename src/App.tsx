@@ -914,6 +914,7 @@ export default function App() {
           selectedRealm={progress.selectedRealm}
           gameMode={gameMode}
           customization={progress.equipped}
+          powerUpgrades={progress.powerUpgrades}
           bankStars={progress.bankStars}
           bestScore={progress.bestScore}
           readyQuestsCount={readyQuestsCount}

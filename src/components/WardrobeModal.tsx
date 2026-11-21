@@ -19,7 +19,7 @@ import {
   WingStyleId,
 } from '../game/types';
 import { PowerUpgradesPanel } from './PowerUpgradesPanel';
-import { UnicornPreviewCanvas } from './UnicornPreviewCanvas';
+import { PowerBurstTrigger, UnicornPreviewCanvas } from './UnicornPreviewCanvas';
 
 interface WardrobeModalProps {
   progress: SavedProgress;
@@ -49,7 +49,17 @@ export function WardrobeModal({
   onUpgradePower,
 }: WardrobeModalProps) {
   const [activeTab, setActiveTab] = useState<WardrobeTab>('coat');
+  const [powerBurst, setPowerBurst] = useState<PowerBurstTrigger | null>(null);
   const equipped = progress.equipped;
+
+  const handleUpgradeAndBurst = (id: PowerUpgradeId) => {
+    onUpgradePower(id);
+    setPowerBurst({
+      id,
+      level: Math.min(5, (progress.powerUpgrades[id] || 1) + 1),
+      nonce: Date.now(),
+    });
+  };
 
   const tabs: { id: WardrobeTab; label: string }[] = [
     { id: 'coat', label: 'الفرو والشعر' },
@@ -93,7 +103,12 @@ export function WardrobeModal({
         <div className="grid flex-1 gap-6 overflow-y-auto p-6 md:grid-cols-[220px_1fr]">
           {/* Live Showcase */}
           <div className="flex flex-col items-center justify-center rounded-2xl border border-[#F5E1EC] bg-gradient-to-b from-[#FFF2F8] to-[#FFFDF9] p-5 text-center">
-            <UnicornPreviewCanvas customization={equipped} size={175} />
+            <UnicornPreviewCanvas
+              customization={equipped}
+              powerUpgrades={progress.powerUpgrades}
+              powerBurst={powerBurst}
+              size={175}
+            />
             <p className="mt-2 font-display text-lg font-bold text-[#3D1D42]">
               يونيكورن {progress.playerName}
             </p>
@@ -470,7 +485,7 @@ export function WardrobeModal({
               <PowerUpgradesPanel
                 bankStars={progress.bankStars}
                 powerUpgrades={progress.powerUpgrades}
-                onUpgradePower={onUpgradePower}
+                onUpgradePower={handleUpgradeAndBurst}
               />
             )}
           </div>

@@ -1472,6 +1472,53 @@ export class UnicornGameEngine {
       );
     }
 
+    // Rising magical particles radiating upward from active & store-upgraded powers
+    if (this.player.shieldActive && Math.random() < 0.28 + this.powerUpgrades.shield * 0.08) {
+      this.spawnParticle(
+        this.player.x + (Math.random() - 0.5) * 38,
+        this.player.y + 18 + (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 26,
+        -(65 + Math.random() * 65),
+        3.2 + Math.random() * 3,
+        0.58 + Math.random() * 0.22,
+        Math.random() < 0.4 ? '#FFFDF9' : '#F472B6',
+        Math.random() < 0.5 ? 'star' : 'aura',
+        true,
+        1.2
+      );
+    }
+    if (
+      (this.player.starRushTimer > 0 || this.player.dashTimer > 0) &&
+      Math.random() < 0.36 + this.powerUpgrades.speed * 0.09
+    ) {
+      this.spawnParticle(
+        this.player.x + (Math.random() - 0.5) * 36,
+        this.player.y + 16,
+        -35 + (Math.random() - 0.5) * 32,
+        -(80 + Math.random() * 75),
+        3.5 + Math.random() * 3.4,
+        0.52 + Math.random() * 0.2,
+        Math.random() < 0.4 ? '#FFFDF9' : '#FBBF24',
+        Math.random() < 0.6 ? 'star' : 'spark',
+        true,
+        1.1
+      );
+    }
+    if (this.player.magnetTimer > 0 && Math.random() < 0.3 + this.powerUpgrades.magnet * 0.08) {
+      this.spawnParticle(
+        this.player.x + (Math.random() - 0.5) * 42,
+        this.player.y + 18,
+        (Math.random() - 0.5) * 30,
+        -(70 + Math.random() * 65),
+        3.2 + Math.random() * 3.2,
+        0.56 + Math.random() * 0.24,
+        Math.random() < 0.4 ? '#E0F2FE' : '#38BDF8',
+        Math.random() < 0.5 ? 'aura' : 'star',
+        true,
+        1.2
+      );
+    }
+
     // Continuous luminous ribbon trail behind acrobatic tricks & high-speed moves
     const isAcrobaticTrail =
       this.player.flipTimer > 0 ||
@@ -1878,6 +1925,7 @@ export class UnicornGameEngine {
       this.player.magnetTimer = magnetStats.duration;
       audioEngine.playGemPickup();
       this.spawnStarBurst(c.x, c.y, '#38BDF8', 14);
+      this.spawnRisingPowerParticles('#38BDF8', '#E0F2FE', 14 + this.powerUpgrades.magnet * 3);
       this.spawnFloatingText(c.x, c.y - 24, 'تفعيل مغناطيس النجوم!', '#0EA5E9');
     } else if (c.type === 'heart') {
       this.hearts = Math.min(this.maxHearts, this.hearts + 1);
@@ -1906,6 +1954,7 @@ export class UnicornGameEngine {
       }
       audioEngine.playShieldPickup();
       this.spawnStarBurst(c.x, c.y, '#F472B6', 14);
+      this.spawnRisingPowerParticles('#E11D74', '#FBCFE8', 14 + this.powerUpgrades.shield * 3);
     } else if (c.type === 'starRush') {
       const speedStats = getSpeedUpgradeStats(this.powerUpgrades.speed);
       this.player.starRushMaxTimer = speedStats.starRushDuration;
@@ -1914,6 +1963,7 @@ export class UnicornGameEngine {
       this.score += 50;
       audioEngine.playPowerStarRush();
       this.spawnStarBurst(c.x, c.y, '#FBBF24', 18);
+      this.spawnRisingPowerParticles('#F59E0B', '#FEF08A', 16 + this.powerUpgrades.speed * 3);
       this.spawnFloatingText(c.x, c.y - 26, 'تفعيل السرعة الخارقة!', '#D97706');
     } else if (c.type === 'chest') {
       this.chestsOpened += 1;
@@ -2519,6 +2569,35 @@ export class UnicornGameEngine {
         true,
         1.6,
         (Math.random() - 0.5) * 9
+      );
+    }
+  }
+
+  private spawnRisingPowerParticles(primaryColor: string, highlightColor: string, count: number) {
+    this.spawnParticle(
+      this.player.x,
+      this.player.y + 18,
+      0,
+      -20,
+      44,
+      0.48,
+      primaryColor,
+      'ring',
+      true
+    );
+    for (let i = 0; i < count; i++) {
+      this.spawnParticle(
+        this.player.x + (Math.random() - 0.5) * 44,
+        this.player.y + 18 + (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 44,
+        -(85 + Math.random() * 115),
+        3.8 + Math.random() * 3.8,
+        0.65 + Math.random() * 0.25,
+        i % 3 === 0 ? highlightColor : primaryColor,
+        i % 3 === 0 ? 'aura' : i % 3 === 1 ? 'star' : 'spark',
+        true,
+        1.1,
+        (Math.random() - 0.5) * 8
       );
     }
   }

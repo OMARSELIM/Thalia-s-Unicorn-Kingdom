@@ -25,6 +25,7 @@ import {
   DailyChallengeProgress,
   GameMode,
   PlayerCustomization,
+  PowerUpgrades,
   REALM_DEFINITIONS,
   RealmId,
   UNICORN_TRAITS,
@@ -36,6 +37,7 @@ interface TitleScreenProps {
   selectedRealm: RealmId;
   gameMode: GameMode;
   customization: PlayerCustomization;
+  powerUpgrades: PowerUpgrades;
   bankStars: number;
   bestScore: number;
   readyQuestsCount: number;
@@ -63,6 +65,7 @@ export function TitleScreen({
   selectedRealm,
   gameMode,
   customization,
+  powerUpgrades,
   bankStars,
   bestScore,
   readyQuestsCount,
@@ -198,7 +201,11 @@ export function TitleScreen({
           {/* Live Animated Unicorn Preview + Clean Stats */}
           <div className="my-2 flex items-center gap-4">
             <div className="animate-gentle-float">
-              <UnicornPreviewCanvas customization={customization} size={116} />
+              <UnicornPreviewCanvas
+                customization={customization}
+                powerUpgrades={powerUpgrades}
+                size={116}
+              />
             </div>
             <div className="flex flex-col items-start text-right">
               <span className="font-display text-lg font-bold text-[#3D1D42]">
